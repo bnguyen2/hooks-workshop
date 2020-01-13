@@ -8,8 +8,32 @@ import { login } from "app/utils"
 // export default LoginFormFinal
 
 export default function LoginForm() {
+  const [showPassword, setShowPassword] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [errors, setErrors] = useState(null)
+
+  const handleSubmit = async e => {
+    e.preventDefault()
+    const [emailField, passwordField] = e.target.elements
+    setLoading(true)
+
+    try {
+      await login(emailField.value, passwordField.value)
+    } catch (err) {
+      console.log(err.message)
+      setErrors(err)
+      setLoading(false)
+    }
+  }
+
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
+      {errors && (
+        <div style={{ color: "red" }}>
+          <p>{errors.message}</p>
+        </div>
+      )}
+
       <VisuallyHidden>
         <label htmlFor="login:email">Email:</label>
       </VisuallyHidden>
@@ -25,7 +49,7 @@ export default function LoginForm() {
       </VisuallyHidden>
       <input
         id="login:password"
-        type="password"
+        type={showPassword ? "text" : "password"}
         className="inputField"
         placeholder="Password"
       />
@@ -33,9 +57,10 @@ export default function LoginForm() {
       <div>
         <label>
           <input
+            onChange={() => setShowPassword(!showPassword)}
             className="passwordCheckbox"
             type="checkbox"
-            defaultChecked={false}
+            defaultChecked={showPassword}
           />{" "}
           show password
         </label>
@@ -43,7 +68,7 @@ export default function LoginForm() {
 
       <TabsButton>
         <FaSignInAlt />
-        <span>Login</span>
+        <span>{loading ? "Loading..." : "Login"}</span>
       </TabsButton>
     </form>
   )
