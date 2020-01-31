@@ -9,6 +9,12 @@ import RecentPostsDropdown from "app/RecentPostsDropdown"
 const errorClass = "NewPost_error"
 const MAX_MESSAGE_LENGTH = 200
 
+function useTitle(title) {
+  useEffect(() => {
+    document.title = title
+  }, [title])
+}
+
 /******************************************************************************/
 // Consider the message length counter. Every time we type, we set state, and
 // then React updates the DOM for us.
@@ -21,6 +27,12 @@ export default function NewPost({ takeFocus, date, onSuccess, showAvatar }) {
   function handleMessageChange(event) {
     setMessage(event.target.value)
   }
+
+  const firstTwenty = message.substr(0, 20)
+
+  useTitle(
+    (document.title = "New Post" + (firstTwenty ? `: ${firstTwenty}` : ""))
+  )
 
   return (
     <div className={"NewPost" + (messageTooLong ? ` ${errorClass}` : "")}>
