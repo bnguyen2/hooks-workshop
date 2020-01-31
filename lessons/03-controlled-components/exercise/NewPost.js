@@ -30,7 +30,10 @@ export default function NewPost({ takeFocus, date, onSuccess, showAvatar }) {
         <div className="NewPost_char_count">
           {message.length}/{MAX_MESSAGE_LENGTH}
         </div>
-        <RecentPostsDropdown uid={auth.uid} onSelect={message => {}} />
+        <RecentPostsDropdown
+          uid={auth.uid}
+          onSelect={message => setMessage(message)}
+        />
         <div className="NewPost_buttons">
           <Minutes date={date} />
           <div>
