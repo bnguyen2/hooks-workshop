@@ -19,9 +19,35 @@ import ProgressCircle from "app/ProgressCircle"
 // For this Avatar to work, we need to load the user and all of their posts
 // so we can calculate the rings on their avatar. Right now, it's just empty.
 
+function useR(uid) {
+  const [user, setUser] = useState(null)
+  useEffect(() => {
+    let isCurrent = true
+
+    fetchUser(uid).then(user => {
+      if (isCurrent) setUser(user)
+    })
+
+    return () => {
+      isCurrent = false
+    }
+  }, [uid])
+
+  return user
+}
+
+function usePosts(uid) {
+  const [posts, setPosts] = useState(null)
+  useEffect(() => subscribeToPosts(uid, setPosts), [uid])
+  return posts
+}
+
+function useRAndPosts(uid) {
+  return { user: useR(uid), posts: usePosts(uid) }
+}
+
 export default function Avatar({ uid, size = 50, bg, className, ...rest }) {
-  const user = null
-  const posts = null
+  const { user, posts } = useRAndPosts(uid)
 
   if (!user) {
     return (
